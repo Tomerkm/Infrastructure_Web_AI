@@ -5,6 +5,7 @@ import os
 import allure
 
 
+# It needs to be not synchronized, it will not work.
 async def browser_use_run(browser_use_agent):
     history = await browser_use_agent.run()
     result = history.final_result()
