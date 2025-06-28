@@ -38,11 +38,12 @@ Or you can install specific browsers by running:
 playwright install chromium --with-deps
 ```
 
-
-
 #### Step 4: Configure Environment
 Open `.env` in your preferred text editor and add your API keys and other settings
 
-
+#### Step 5: Execute
+```bash
+pytest
+```
 
 
