@@ -41,6 +41,8 @@ def alumnium_run(convert_action_to_list_tuple, al):
 
         else:
             commands_mapping[op_command](text_command)
+
+
 @allure.title("Test Web AI")
 @allure.description("This Test Tests Alumnium And Browser Use")
 def test_web_browser_and_alumnium(convert_action_to_list_tuple, set_api_key, al, driver, browser_use_agent):

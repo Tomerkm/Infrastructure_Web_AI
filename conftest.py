@@ -1,13 +1,19 @@
 from dotenv import load_dotenv
-# Order is matter, Alumni call constructor and init the model to the default openapi.
+# Order is matter, Alumni call constructor and init the provider to the default openapi.
 # So I load env before it happening
+# Use To Read Environment Variables From .env File
 load_dotenv()
 
 import os
 import ast
 from selenium.webdriver import Chrome, Firefox, Edge, Safari
 from browser_use import Agent
+from browser_use.llm import ChatAnthropic
+from browser_use.llm import ChatGoogle
 from browser_use.llm import ChatOpenAI
+from browser_use.llm import ChatAzureOpenAI
+from browser_use.llm import ChatGroq
+
 from alumnium import Alumni
 from pytest import fixture
 
@@ -18,7 +24,7 @@ gb_browsers_storage = {"chrome": Chrome,
                        "safari": Safari
                        }
 
-# Use For Mapping Variables To Original API Key Names
+# Use For Mapping Variables To Original Providers API Key Names
 gb_api_keys_mapping_storage = {
     "anthropic": "ANTHROPIC_API_KEY",
     "google": "GOOGLE_API_KEY",
@@ -30,8 +36,17 @@ gb_api_keys_mapping_storage = {
     "novita": "NOVITA_API_KEY"
 }
 
+model_name = os.environ["MODEL_NAME"].lower().strip()
 
-# Use To Read Environment Variables From .env File
+# Use For Mapping To Function Directly And Send Model By Correct Name
+gb_mapping_to_providers_api = \
+{
+    "anthropic": (ChatAnthropic, {"model_name": model_name}),
+    "google": (ChatGoogle, {"model": model_name}),
+    "openai": (ChatOpenAI, {"model": model_name}),
+    "azure": (ChatAzureOpenAI, {"model": model_name}),
+    "grok": (ChatGroq, {"model": model_name}),
+}
 
 
 # Convert The String To List Of Tuples - More Comfortable
@@ -48,19 +63,19 @@ def convert_action_to_list_tuple():
 def set_api_key():
     global gb_api_keys_mapping_storage
 
-    model = os.environ["ALUMNIUM_MODEL"].lower().strip()
-    if "ollama" in model or model in "ollama":
+    provider = os.environ["ALUMNIUM_MODEL"].lower().strip()
+    if "ollama" in provider or provider in "ollama":
         return None
 
-    # If User Insert model name with version, it will find the model name only for mapping
+    # If User Insert provider name with version, it will find the provider name only for mapping
     for key in gb_api_keys_mapping_storage.keys():
-        if key in model or key in model:
-            model = key
+        if key in provider or key in provider:
+            provider = key
             break
 
-    if not (model in "aws_meta" or "aws_meta" in model):
-        model_api_key_name = gb_api_keys_mapping_storage[model]
-        os.environ[model_api_key_name] = os.environ["API_KEY"]
+    if not (provider in "aws_meta" or "aws_meta" in provider):
+        provider_api_key_name = gb_api_keys_mapping_storage[provider]
+        os.environ[provider_api_key_name] = os.environ["API_KEY"]
 
 
 # Init Browser And Get URL To Start Test It
@@ -96,11 +111,17 @@ def browser_use_agent(set_api_key):
     if os.environ["FRAMEWORK"].lower().replace(" ", "") != "Browser Use".lower().replace(" ", ""):
         yield None
     else:
+        global gb_mapping_to_providers_api
+
+        provider_key = os.environ["ALUMNIUM_MODEL"].lower().strip()
+        provider_func_call, kwargs = gb_mapping_to_providers_api[provider_key]
+
         url = os.environ["URL"]
         action = os.environ["ACTION"]
 
         agent = Agent(
             task=f"Go To {url} Website, And {action}",
-            llm=ChatOpenAI(model=os.environ["ALUMNIUM_MODEL"].lower().strip()),
+            llm=provider_func_call(**kwargs),
         )
+
         yield agent
