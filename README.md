@@ -10,9 +10,8 @@ cd Infrastructure_Web_AI
 #### Step 2: Set Up Python Environment
 We recommend using [uv](https://docs.astral.sh/uv/) for managing the Python environment.
 
-Using uv (recommended):
 ```bash
-uv venv --python 3.11
+python -m venv venv
 ```
 
 Activate the virtual environment:
