@@ -11,7 +11,7 @@ cd Infrastructure_Web_AI
 We recommend using [uv](https://docs.astral.sh/uv/) for managing the Python environment.
 
 ```bash
-python -m venv venv
+python -m venv .venv
 ```
 
 Activate the virtual environment:
