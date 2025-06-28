@@ -3,8 +3,8 @@
 ## Installation Guide
 #### Step 1: Clone the Repository
 ```bash
-git clone https://github.com/browser-use/web-ui.git
-cd web-ui
+git clone https://github.com/Tomerkm/Infrastructure_Web_AI.git
+cd Infrastructure_Web_AI
 ```
 
 #### Step 2: Set Up Python Environment
