@@ -23,3 +23,18 @@ Activate the virtual environment:
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
+
+#### Step 3: Install Dependencies
+Install Python packages:
+```bash
+pip install -r requirements.txt
+```
+
+Install Browsers in playwright. 
+```bash
+playwright install --with-deps
+```
+Or you can install specific browsers by running:
+```bash
+playwright install chromium --with-deps
+```
